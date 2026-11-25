@@ -355,25 +355,62 @@ def card_scene(d, x, y, w, h, kind, tag, bg):
     d.rectangle([x, y, x + w, y + h], fill=bg)
     if kind == "tower":
         vgrad(d, (x, y, x + w, y + h), (70, 88, 120), (30, 38, 60))
+        # flanking skyline
+        d.rectangle([x + 6, y + h - 26, x + 44, y + h], fill=(20, 22, 34))
+        d.rectangle([x + w - 46, y + h - 32, x + w - 6, y + h], fill=(20, 22, 34))
+        for (wx, wy) in ((x + 12, y + h - 20), (x + 26, y + h - 14),
+                         (x + w - 38, y + h - 26), (x + w - 22, y + h - 18)):
+            d.rectangle([wx, wy, wx + 4, wy + 4], fill=(250, 200, 90))
+        d.rectangle([x, y + h - 5, x + w, y + h], fill=(14, 16, 26))
+        for (sx, sy) in ((x + 48, y + 6), (x + 66, y + 12), (x + w - 58, y + 8), (x + w - 70, y + 16)):
+            d.ellipse([sx, sy, sx + 2, sy + 2], fill=(220, 225, 240))
         d.rectangle([x + w // 2 - 14, y + 8, x + w // 2 + 14, y + h], fill=(24, 26, 40))
         for wy in range(y + 12, y + h - 4, 8):
             d.rectangle([x + w // 2 - 10, wy, x + w // 2 - 4, wy + 4], fill=(250, 200, 90))
             d.rectangle([x + w // 2 + 4, wy, x + w // 2 + 10, wy + 4], fill=(250, 200, 90))
+        d.ellipse([x + w // 2 - 2, y + 4, x + w // 2 + 2, y + 8], fill=(240, 60, 50))
         d.ellipse([x + w - 34, y + 6, x + w - 8, y + 32], fill=(240, 150, 60))
     elif kind == "tanker":
+        vgrad(d, (x, y, x + w, y + h), (150, 80, 40), (60, 30, 24))
+        d.ellipse([x + w - 46, y + 4, x + w - 22, y + 28], fill=(250, 190, 90))
+        # distant tanker silhouette on the horizon
+        d.rectangle([x + 8, y + h - 24, x + 44, y + h - 16], fill=(40, 22, 18))
+        d.rectangle([x + 18, y + h - 32, x + 26, y + h - 24], fill=(40, 22, 18))
         d.rectangle([x, y + h - 16, x + w, y + h], fill=(16, 44, 66))
+        for wy in (y + h - 12, y + h - 6):
+            for wx in range(x + 6, x + w - 6, 18):
+                d.line([(wx, wy), (wx + 8, wy)], fill=(120, 170, 200), width=2)
         d.rectangle([x + 30, y + h - 30, x + w - 30, y + h - 16], fill=(40, 40, 48))
         d.rectangle([x + 46, y + h - 44, x + w - 46, y + h - 30], fill=(60, 60, 70))
         for fx in (x + 52, x + 96, x + 140):
             d.polygon([(fx, y + h - 44), (fx + 8, y + 8), (fx + 16, y + h - 44)], fill=(240, 130, 40))
             d.ellipse([fx + 2, y + 2, fx + 14, y + 16], fill=(250, 200, 80))
+        for (gx, gy) in ((x + 60, y + 4), (x + 78, y + 10)):
+            d.line([(gx, gy), (gx + 4, gy + 3), (gx + 8, gy)], fill=(230, 230, 220), width=1)
     elif kind == "chart":
+        # faint volume bars behind the line
+        for (bx, bh) in ((x + 64, 12), (x + 88, 20), (x + 112, 16), (x + 136, 26),
+                         (x + 160, 20), (x + 178, 12)):
+            d.rectangle([bx, y + h - 8 - bh, bx + 12, y + h - 8], fill=(70, 160, 110))
         d.line([(x + 8, y + h - 12), (x + w // 3, y + h - 26), (x + 2 * w // 3, y + h - 18),
                 (x + w - 14, y + 8)], fill=(255, 255, 255), width=4)
         d.polygon([(x + w - 22, y + 4), (x + w - 8, y + 8), (x + w - 16, y + 18)], fill=(255, 255, 255))
         for gy in range(y + 8, y + h - 8, 12):
             d.line([(x + 6, gy), (x + w - 6, gy)], fill=(255, 255, 255, 60), width=1)
+        # second, flatter trend line (dashed)
+        for sx in range(x + 10, x + w - 20, 12):
+            d.line([(sx, y + h - 20), (sx + 6, y + h - 22)], fill=(200, 255, 220), width=2)
     elif kind == "trophy":
+        # stadium: floodlight beams + crowd + pitch
+        d.line([(x + 6, y + 4), (x + w // 2 - 30, y + 30)], fill=(240, 235, 170), width=2)
+        d.line([(x + w - 6, y + 4), (x + w // 2 + 30, y + 30)], fill=(240, 235, 170), width=2)
+        for (cx, cy, cc) in ((x + 30, y + 10, (220, 80, 80)), (x + 42, y + 16, (240, 240, 240)),
+                             (x + 52, y + 8, (90, 140, 220)), (x + w - 30, y + 10, (240, 240, 240)),
+                             (x + w - 42, y + 16, (220, 80, 80)), (x + w - 52, y + 8, (240, 200, 80)),
+                             (x + 32, y + 24, (240, 200, 80)), (x + w - 32, y + 24, (90, 140, 220))):
+            d.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=cc)
+        d.rectangle([x, y + h - 8, x + w, y + h], fill=(30, 120, 60))
+        d.line([(x, y + h - 8), (x + w, y + h - 8)], fill=(255, 255, 255), width=1)
         d.ellipse([x + w // 2 - 26, y + 8, x + w // 2 + 26, y + 44], fill=(250, 205, 90))
         d.rectangle([x + w // 2 - 26, y + 8, x + w // 2 + 26, y + 26], fill=(250, 205, 90))
         d.rectangle([x + w // 2 - 4, y + 40, x + w // 2 + 4, y + h - 8], fill=(250, 205, 90))
@@ -382,30 +419,69 @@ def card_scene(d, x, y, w, h, kind, tag, bg):
         d.arc([x + w // 2 + 12, y + 10, x + w // 2 + 36, y + 34], 270, 90, fill=(250, 205, 90), width=4)
     elif kind == "dawn":
         vgrad(d, (x, y, x + w, y + h), (40, 40, 70), (220, 120, 50))
+        for (sx, sy) in ((x + 20, y + 6), (x + 44, y + 12), (x + w - 20, y + 8), (x + w - 44, y + 14)):
+            d.ellipse([sx, sy, sx + 2, sy + 2], fill=(230, 230, 240))
+        for (gx, gy) in ((x + 30, y + 10), (x + 52, y + 16), (x + w - 40, y + 12)):
+            d.line([(gx, gy), (gx + 4, gy + 3), (gx + 8, gy)], fill=(30, 28, 40), width=1)
         d.ellipse([x + w // 2 - 14, y + h - 30, x + w // 2 + 14, y + h - 2], fill=(250, 200, 90))
-        for (bx, bh) in ((x + 12, 18), (x + 60, 26), (x + 150, 20)):
-            d.rectangle([bx, y + h - bh, bx + 34, y + h], fill=(24, 22, 34))
+        for (bx, bh) in ((x + 8, 14), (x + 34, 22), (x + 62, 16), (x + 104, 26), (x + 142, 18), (x + 168, 24)):
+            d.rectangle([bx, y + h - bh, bx + 24, y + h], fill=(24, 22, 34))
+        # smoke column from the hit building (kept inside the scene box)
+        for (sx, sy, r) in ((x + 112, y + h - 32, 5), (x + 116, y + h - 40, 6), (x + 110, y + h - 46, 5)):
+            d.ellipse([sx - r, sy - r, sx + r, sy + r], fill=(70, 66, 70))
     elif kind == "smoke":
         vgrad(d, (x, y, x + w, y + h), (120, 110, 100), (60, 56, 52))
+        # ruined skyline behind the smoke
+        for (bx, bh) in ((x + 6, 20), (x + 30, 28), (x + 150, 24), (x + 172, 16)):
+            d.rectangle([bx, y + h - bh, bx + 20, y + h], fill=(52, 48, 46))
         for (sx, sy, r) in ((x + 40, y + 14, 12), (x + 70, y + 8, 15), (x + 105, y + 16, 11),
                             (x + 140, y + 10, 13)):
             d.ellipse([sx - r, sy - r, sx + r, sy + r], fill=(90, 86, 84))
         d.polygon([(x + 90, y + h), (x + 110, y + 18), (x + 130, y + h)], fill=(240, 140, 50))
+        d.polygon([(x + 150, y + h), (x + 160, y + 30), (x + 170, y + h)], fill=(230, 110, 40))
         d.rectangle([x + 12, y + h - 12, x + w - 12, y + h], fill=(30, 28, 26))
+        for (rx, ry) in ((x + 30, y + h - 4), (x + 60, y + h - 3), (x + 140, y + h - 4)):
+            d.ellipse([rx, ry, rx + 3, ry + 3], fill=(120, 116, 110))
     elif kind == "derrick":
+        d.ellipse([x + w - 30, y + 6, x + w - 10, y + 26], fill=(250, 200, 90))
+        # second, smaller derrick at left
+        d.line([(x + 18, y + h - 6), (x + 34, y + 16), (x + 50, y + h - 6)], fill=(30, 26, 22), width=3)
+        d.line([(x + 26, y + h - 6), (x + 34, y + 24), (x + 42, y + h - 6)], fill=(30, 26, 22), width=2)
         d.line([(x + 40, y + h - 6), (x + 70, y + 6), (x + 100, y + h - 6)], fill=(30, 26, 22), width=4)
         d.line([(x + 52, y + h - 6), (x + 70, y + 20), (x + 88, y + h - 6)], fill=(30, 26, 22), width=3)
         d.rectangle([x + w - 48, y + h - 26, x + w - 22, y + h - 6], fill=(24, 22, 20))
         d.line([(x + w - 48, y + h - 19), (x + w - 22, y + h - 19)], fill=(120, 110, 100), width=2)
         d.line([(x + w - 48, y + h - 12), (x + w - 22, y + h - 12)], fill=(120, 110, 100), width=2)
         d.polygon([(x + w - 35, y + h - 26), (x + w - 30, y + h - 38), (x + w - 25, y + h - 26)], fill=(240, 140, 50))
+        # pipeline + barrels along the ground
+        d.line([(x + 6, y + h - 4), (x + w - 6, y + h - 4)], fill=(24, 22, 20), width=3)
+        for bx in (x + 108, x + 122, x + 136):
+            d.rectangle([bx, y + h - 16, bx + 10, y + h - 6], fill=(60, 52, 44))
+            d.line([(bx, y + h - 11), (bx + 10, y + h - 11)], fill=(140, 130, 120), width=1)
     elif kind == "capitol":
+        vgrad(d, (x, y, x + w, y + h), (140, 180, 220), (225, 225, 220))
+        # side wings + trees
+        d.rectangle([x + 6, y + 30, x + w // 2 - 36, y + h - 10], fill=(225, 225, 215))
+        d.rectangle([x + w // 2 + 36, y + 30, x + w - 6, y + h - 10], fill=(225, 225, 215))
+        for (tx, ty) in ((x + 14, y + h - 26), (x + w - 14, y + h - 26)):
+            d.line([(tx, ty + 10), (tx, ty)], fill=(60, 90, 50), width=2)
+            d.ellipse([tx - 6, ty - 8, tx + 6, ty + 4], fill=(50, 120, 60))
         d.ellipse([x + w // 2 - 30, y + 6, x + w // 2 + 30, y + 30], fill=(235, 235, 225))
         d.rectangle([x + w // 2 - 34, y + 26, x + w // 2 + 34, y + h - 10], fill=(235, 235, 225))
         for cx in range(x + w // 2 - 28, x + w // 2 + 29, 12):
             d.line([(cx, y + 30), (cx, y + h - 12)], fill=(160, 160, 150), width=2)
         d.rectangle([x + w // 2 - 2, y + 0, x + w // 2 + 2, y + 8], fill=(235, 235, 225))
+        # small flag on the finial + steps
+        d.polygon([(x + w // 2 + 2, y + 1), (x + w // 2 + 14, y + 4),
+                   (x + w // 2 + 2, y + 7)], fill=(200, 50, 50))
+        for sy in (y + h - 8, y + h - 5):
+            d.line([(x + w // 2 - 40, sy), (x + w // 2 + 40, sy)], fill=(170, 170, 160), width=2)
     elif kind == "flask":
+        # shelf with bottles at the back
+        d.line([(x + 8, y + 12), (x + w - 8, y + 12)], fill=(200, 230, 235), width=2)
+        for (bx, bw2, bh2, bc) in ((x + 16, 8, 10, (255, 200, 90)), (x + 34, 7, 12, (240, 120, 120)),
+                                   (x + w - 44, 8, 11, (150, 220, 150)), (x + w - 26, 7, 12, (255, 200, 90))):
+            d.rectangle([bx, y + 12 - bh2, bx + bw2, y + 12], fill=bc)
         d.polygon([(x + w // 2 - 8, y + 8), (x + w // 2 + 8, y + 8),
                    (x + w // 2 + 26, y + h - 10), (x + w // 2 - 26, y + h - 10)],
                   fill=(220, 240, 245))
@@ -413,7 +489,19 @@ def card_scene(d, x, y, w, h, kind, tag, bg):
         for (px, py, r) in ((x + w // 2 - 8, y + 22, 4), (x + w // 2 + 6, y + 16, 3),
                             (x + w // 2, y + 30, 5)):
             d.ellipse([px - r, py - r, px + r, py + r], fill=(255, 255, 255))
+        # bench line + small second flask
+        d.line([(x + 6, y + h - 8), (x + w - 6, y + h - 8)], fill=(200, 230, 235), width=2)
+        d.polygon([(x + w - 46, y + 26), (x + w - 38, y + 26),
+                   (x + w - 30, y + h - 10), (x + w - 54, y + h - 10)], fill=(200, 225, 230))
+        d.rectangle([x + w - 50, y + h - 18, x + w - 34, y + h - 10], fill=(90, 190, 150))
     elif kind == "rocket":
+        for (sx, sy) in ((x + 12, y + 40), (x + 44, y + 8), (x + 58, y + 16),
+                         (x + w - 16, y + 8), (x + w - 34, y + 18), (x + w - 52, y + 32)):
+            d.ellipse([sx, sy, sx + 2, sy + 2], fill=(230, 235, 250))
+        # launch gantry left of the rocket
+        d.rectangle([x + 26, y + 6, x + 34, y + h - 6], fill=(120, 125, 135))
+        d.line([(x + 34, y + 14), (x + w // 2 - 12, y + 14)], fill=(120, 125, 135), width=3)
+        d.line([(x + 34, y + 30), (x + w // 2 - 12, y + 30)], fill=(120, 125, 135), width=3)
         d.polygon([(x + w // 2, y + 4), (x + w // 2 + 12, y + 26),
                    (x + w // 2 + 12, y + h - 18), (x + w // 2 - 12, y + h - 18),
                    (x + w // 2 - 12, y + 26)], fill=(235, 235, 230))
@@ -424,6 +512,11 @@ def card_scene(d, x, y, w, h, kind, tag, bg):
                    (x + w // 2 + 12, y + h - 8)], fill=(200, 60, 50))
         d.polygon([(x + w // 2 - 5, y + h - 18), (x + w // 2 + 5, y + h - 18),
                    (x + w // 2, y + h - 2)], fill=(250, 180, 60))
+        # exhaust plume + pad
+        for (px, py, r) in ((x + w // 2 - 8, y + h - 10, 6), (x + w // 2 + 6, y + h - 8, 7),
+                            (x + w // 2, y + h - 14, 5)):
+            d.ellipse([px - r, py - r, px + r, py + r], fill=(220, 220, 215))
+        d.rectangle([x + w // 2 - 34, y + h - 4, x + w // 2 + 34, y + h], fill=(90, 95, 105))
     # tag chip, bottom-left
     f = Fsans(10, bold=True)
     tw = f.getlength(tag) + 12
@@ -629,18 +722,22 @@ def build():
             yy = by + j * 19
             f = Fsans(10, bold=True)
             d.text((x0, yy), str(n), font=f, fill=INK)
-            d.ellipse([x0 + 20, yy + 3, x0 + 28, yy + 11], fill=RHEX[region])
+            d.ellipse([x0 + 19, yy + 2, x0 + 29, yy + 12], fill=RHEX[region])
             line = "%s (%s)" % (txt, src)
-            f2 = Fsans(10)
-            if f2.getlength(line) > bw - 34:
-                # shrink to fit one line
-                sz = 10
-                while sz > 8 and Fsans(sz).getlength(line) > bw - 34:
-                    sz -= 1
-                f2 = Fsans(sz)
-                if f2.getlength(line) > bw - 34:
-                    OVERFLOWS.append("brief %d too long even at 8px" % n)
-            d.text((x0 + 32, yy), line, font=f2, fill=INK)
+            words = line.split(" ")
+            lead = " ".join(words[:3])
+            rest = " " + " ".join(words[3:])
+            # fit: bold lead + regular rest, base 11px (was 10), floor 9px
+            sz = 11
+            while sz > 9 and (Fsans(sz, bold=True).getlength(lead)
+                              + Fsans(sz).getlength(rest)) > bw - 34:
+                sz -= 1
+            fb = Fsans(sz, bold=True)
+            f2 = Fsans(sz)
+            if fb.getlength(lead) + f2.getlength(rest) > bw - 34:
+                OVERFLOWS.append("brief %d too long even at 9px" % n)
+            d.text((x0 + 32, yy), lead, font=fb, fill=INK)
+            d.text((x0 + 32 + fb.getlength(lead), yy), rest, font=f2, fill=INK)
     # map
     mx, my, mw, mh = 668, by - 4, W - 8 - 668, 244
     text_w(d, mx, my, "WHERE IT HAPPENED \u00b7 PINS 1\u201313", Fsans(11, bold=True))
